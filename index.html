@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#F58C3C" id="theme-color-meta">
+    <meta name="color-scheme" content="dark light">
+    <title>ابزارک لینک شیشه‌ای</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sar: env(safe-area-inset-right);
+            --sab: env(safe-area-inset-bottom);
+            --sal: env(safe-area-inset-left);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #F58C3C;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.5s ease;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        @supports (padding-top: constant(safe-area-inset-top)) {
+            :root {
+                --sat: constant(safe-area-inset-top);
+                --sar: constant(safe-area-inset-right);
+                --sab: constant(safe-area-inset-bottom);
+                --sal: constant(safe-area-inset-left);
+            }
+        }
+
+        body.success-bg {
+            background-color: #4caf50 !important;
+        }
+
+        .background-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: inherit;
+            transition: background-color 0.5s ease;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .raindrop {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.75);
+            filter: blur(80px);
+            opacity: 0.7;
+            pointer-events: none;
+            will-change: transform, opacity;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-150vh) scale(1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(150vh) scale(0.2);
+                opacity: 0;
+            }
+        }
+        
+        :root {
+            --primary-color: #F58C3C;
+            --primary-dark: #e07d2f;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            z-index: 1;
+            padding: var(--sat) var(--sar) var(--sab) var(--sal);
+        }
+        
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 72%;
+            max-width: 384px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            pointer-events: auto;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            z-index: 2;
+            margin: auto;
+        }
+        
+        .glass-card::-webkit-scrollbar {
+            width: 6px;
+        }
+        .glass-card::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        .glass-card::-webkit-scrollbar-thumb {
+            background: rgba(245,140,60,0.5);
+            border-radius: 10px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: white;
+            font-size: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(245, 140, 60, 0.5);
+            transition: all 0.3s ease;
+            z-index: 2;
+            font-size: 1.2rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .input-with-icon i.valid-icon {
+            color: rgba(76, 175, 80, 0.7) !important;
+        }
+        
+        .input-with-icon i.invalid-icon {
+            color: rgba(244, 67, 54, 0.7) !important;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+        
+        .input-with-icon i svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 15px 14px 50px;
+            border: 3px solid rgba(245, 140, 60, 0.5);
+            border-radius: 12px;
+            font-size: 15px;
+            background: transparent;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: all 0.3s;
+            color: rgba(245, 140, 60, 0.5);
+            font-weight: 500;
+            outline: none;
+        }
+        
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        input[type="text"].orange-border {
+            border-color: rgba(245, 140, 60, 0.5) !important;
+            color: rgba(245, 140, 60, 0.5) !important;
+        }
+        
+        input[type="text"].valid-link {
+            border-color: rgba(76, 175, 80, 0.7) !important;
+            color: rgba(76, 175, 80, 0.7) !important;
+        }
+        
+        input[type="text"].valid-btn-text {
+            border-color: rgba(76, 175, 80, 0.7) !important;
+            color: rgba(76, 175, 80, 0.7) !important;
+        }
+        
+        input[type="text"].invalid-link {
+            border-color: rgba(244, 67, 54, 0.7) !important;
+            color: rgba(244, 67, 54, 0.7) !important;
+        }
+        
+        #generate-btn, #copy-main-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        #generate-btn {
+            background: var(--primary-dark);
+        }
+        
+        #generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        #copy-main-btn {
+            background: var(--success-color);
+            display: none;
+        }
+        
+        #copy-main-btn:hover {
+            background: #2e7d32;
+        }
+        
+        .glass-link-small {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(76, 175, 80, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            font-family: monospace;
+            font-size: 13px;
+            direction: ltr;
+            text-align: left;
+            color: #4caf50;
+            word-break: break-all;
+            display: none;
+        }
+        
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        .popup-content {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            position: absolute;
+            left: 20px;
+            top: 66.67%;
+            transform: translateY(-50%);
+            min-width: 280px;
+        }
+        
+        .popup-content p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .popup-content strong {
+            color: #4caf50;
+        }
+        
+        .popup-buttons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            flex-direction: row-reverse;
+        }
+        
+        .popup-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 80px;
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        .popup-yes {
+            background: rgba(76, 175, 80, 0.3);
+        }
+        
+        .popup-yes:hover {
+            background: rgba(76, 175, 80, 0.5);
+        }
+        
+        .popup-no {
+            background: rgba(245, 140, 60, 0.3);
+        }
+        
+        .popup-no:hover {
+            background: rgba(245, 140, 60, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .glass-card {
+                padding: 20px;
+                width: 72%;
+                max-width: 320px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .popup-content {
+                left: 10px;
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-layer" id="backgroundLayer"></div>
+    <div class="rain-container" id="rainContainer"></div>
+    
+    <div class="main-container" id="mainContainer">
+        <div class="glass-card" id="glassCard">
+            <div class="header">
+                <h1>ابزارک لینک شیشه‌ای</h1>
+            </div>
+            
+            <div class="form-group">
+                <label for="public-link">لینک یا آیدی ایتا</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-link" id="link-icon"></i>
+                    <input type="text" id="public-link" placeholder="https://eitaa.com/... یا @username" class="orange-border">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="btn-text">متن روی دکمه</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-font" id="btn-text-icon"></i>
+                    <input type="text" id="btn-text" placeholder="مثلاً: دانلود فایل" class="orange-border">
+                </div>
+            </div>
+            
+            <button id="generate-btn" onclick="generateGlassLink()" disabled>
+                <i class="fas fa-magic"></i> تبدیل
+            </button>
+            
+            <button id="copy-main-btn" onclick="copyMainLink()">
+                <i class="fas fa-copy"></i> کپی لینک
+            </button>
+            
+            <div id="glass-link-container" class="glass-link-small"></div>
+        </div>
+    </div>
+
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="popup-content">
+            <p>آیا <strong id="potential-username"></strong> یک آیدی است؟</p>
+            <div class="popup-buttons">
+                <button id="popup-yes" class="popup-btn popup-yes">آره</button>
+                <button id="popup-no" class="popup-btn popup-no">نه</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const container = document.getElementById('rainContainer');
+            const numberOfDrops = 18;
+            const quadrants = [
+                { min: 0, max: 25 },
+                { min: 25, max: 50 },
+                { min: 50, max: 75 },
+                { min: 75, max: 100 }
+            ];
+            const colors = [
+                '#ffffff', '#fff5e6', '#fff0e0', '#fffaef', 
+                '#ffffff', '#fffaf0', '#fffff0', '#f5f5f5', '#faf0e6'
+            ];
+
+            for (let i = 0; i < numberOfDrops; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'raindrop';
+                const size = 70 + Math.random() * 40;
+                drop.style.width = size + 'vw';
+                drop.style.height = size + 'vw';
+                const quadrant = quadrants[i % quadrants.length];
+                const leftPosition = quadrant.min + Math.random() * (quadrant.max - quadrant.min - 15);
+                drop.style.left = leftPosition + '%';
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                drop.style.backgroundColor = randomColor;
+                const duration = 14 + Math.random() * 10;
+                drop.style.animationDuration = duration + 's';
+                const delay = -Math.random() * 22;
+                drop.style.animationDelay = delay + 's';
+                container.appendChild(drop);
+            }
+        })();
+
+        const TRASH_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0Z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/></svg>`;
+
+        let currentGlassLink = '';
+        let potentialUsername = '';
+        let typingTimer;
+        const typingDelay = 3000; // 3 ثانیه
+        let isSessionActive = false;
+
+        const backgroundLayer = document.getElementById('backgroundLayer');
+        const themeColorMeta = document.getElementById('theme-color-meta');
+        const mainContainer = document.getElementById('mainContainer');
+        const glassCard = document.getElementById('glassCard');
+
+        // تنظیم ارتفاع با visualViewport
+        function adjustHeight() {
+            if (window.visualViewport) {
+                const vv = window.visualViewport;
+                mainContainer.style.height = vv.height + 'px';
+                mainContainer.style.width = vv.width + 'px';
+                mainContainer.style.top = vv.offsetTop + 'px';
+                mainContainer.style.left = vv.offsetLeft + 'px';
+            } else {
+                mainContainer.style.height = window.innerHeight + 'px';
+                mainContainer.style.width = window.innerWidth + 'px';
+                mainContainer.style.top = '0';
+                mainContainer.style.left = '0';
+            }
+        }
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', adjustHeight);
+            window.visualViewport.addEventListener('scroll', adjustHeight);
+        } else {
+            window.addEventListener('resize', adjustHeight);
+        }
+        adjustHeight();
+
+        function updateBackgroundColor(color) {
+            document.body.style.backgroundColor = color;
+            if (backgroundLayer) {
+                backgroundLayer.style.backgroundColor = color;
+            }
+            if (themeColorMeta) {
+                themeColorMeta.setAttribute('content', color);
+            }
+        }
+
+        function setNeutralIcon(iconId) {
+            const icon = document.getElementById(iconId);
+            icon.innerHTML = '';
+            icon.className = iconId === 'link-icon' ? 'fas fa-link' : 'fas fa-font';
+            icon.style.color = 'rgba(245, 140, 60, 0.5)';
+        }
+        
+        function setValidIcon(iconId) {
+            const icon = document.getElementById(iconId);
+            icon.innerHTML = '';
+            icon.className = (iconId === 'link-icon' ? 'fas fa-link' : 'fas fa-font') + ' valid-icon';
+        }
+        
+        function setInvalidIcon() {
+            const icon = document.getElementById('link-icon');
+            icon.innerHTML = TRASH_SVG;
+            icon.className = 'invalid-icon';
+        }
+
+        function setLinkFieldOrange() {
+            const linkInput = document.getElementById('public-link');
+            linkInput.classList.remove('valid-link', 'invalid-link');
+            linkInput.style.color = 'rgba(245, 140, 60, 0.5)';
+        }
+        
+        function setBtnFieldOrange() {
+            const btnInput = document.getElementById('btn-text');
+            btnInput.classList.remove('valid-btn-text');
+            btnInput.style.color = 'rgba(245, 140, 60, 0.5)';
+        }
+
+        function setLinkFieldGreen() {
+            const linkInput = document.getElementById('public-link');
+            linkInput.classList.remove('invalid-link');
+            linkInput.classList.add('valid-link');
+            linkInput.style.color = 'rgba(76, 175, 80, 0.7)';
+            setValidIcon('link-icon');
+        }
+        
+        function setBtnFieldGreen() {
+            const btnInput = document.getElementById('btn-text');
+            btnInput.classList.add('valid-btn-text');
+            btnInput.style.color = 'rgba(76, 175, 80, 0.7)';
+            setValidIcon('btn-text-icon');
+        }
+
+        function setLinkFieldRed() {
+            const linkInput = document.getElementById('public-link');
+            linkInput.classList.remove('valid-link');
+            linkInput.classList.add('invalid-link');
+            linkInput.style.color = 'rgba(244, 67, 54, 0.7)';
+            setInvalidIcon();
+        }
+
+        function resetAllState() {
+            document.getElementById('public-link').value = '';
+            document.getElementById('btn-text').value = '';
+            document.getElementById('public-link').classList.remove('valid-link', 'invalid-link');
+            document.getElementById('btn-text').classList.remove('valid-btn-text');
+            setNeutralIcon('link-icon');
+            setNeutralIcon('btn-text-icon');
+            document.getElementById('glass-link-container').innerHTML = '';
+            document.getElementById('glass-link-container').style.display = 'none';
+            document.getElementById('generate-btn').style.display = 'block';
+            document.getElementById('copy-main-btn').style.display = 'none';
+            isSessionActive = false;
+            currentGlassLink = '';
+            document.body.classList.remove('success-bg');
+            updateBackgroundColor('#F58C3C');
+            updateGenerateButtonState();
+        }
+
+        function updateGenerateButtonState() {
+            const link = document.getElementById('public-link').value.trim();
+            const btn = document.getElementById('btn-text').value.trim();
+            document.getElementById('generate-btn').disabled = !(link && btn);
+        }
+
+        function isValidLink(input) {
+            const v = input.trim();
+            if (!v) return false;
+            return v.startsWith('@') || v.startsWith('https://eitaa.com/');
+        }
+        
+        function isPotentialId(input) {
+            const v = input.trim();
+            return /^[a-zA-Z0-9_]{3,30}$/.test(v) && !v.startsWith('@') && !v.startsWith('http');
+        }
+        
+        function containsInvalidChars(input) {
+            const v = input.trim();
+            if (v.startsWith('@')) return /[^a-zA-Z0-9_]/.test(v.slice(1));
+            if (v.startsWith('https://eitaa.com/')) return /[^a-zA-Z0-9_]/.test(v.slice(18));
+            return /[^a-zA-Z0-9_]/.test(v);
+        }
+
+        function checkLinkType() {
+            const link = document.getElementById('public-link').value;
+            const input = document.getElementById('public-link');
+
+            if (isSessionActive) {
+                setLinkFieldGreen();
+                return;
+            }
+
+            input.classList.remove('valid-link', 'invalid-link');
+
+            if (!link.trim()) {
+                setNeutralIcon('link-icon');
+                input.style.color = 'rgba(245, 140, 60, 0.5)';
+                return;
+            }
+
+            if (containsInvalidChars(link)) {
+                setLinkFieldRed();
+                return;
+            }
+
+            if (isValidLink(link)) {
+                if (link.includes('joinchat')) {
+                    setLinkFieldRed();
+                } else {
+                    setLinkFieldGreen(); // لینک معتبر فوراً سبز می‌شود
+                    updateGenerateButtonState();
+                }
+            } else {
+                if (link.includes('://') && !link.includes('eitaa.com')) {
+                    setLinkFieldRed();
+                } else {
+                    setNeutralIcon('link-icon');
+                    input.style.color = 'rgba(245, 140, 60, 0.5)';
+                    // اگر پتانسیل آیدی بود، تایمر برای پاپ‌آپ
+                    if (isPotentialId(link)) {
+                        startTypingTimer();
+                    }
+                }
+            }
+            updateGenerateButtonState();
+        }
+
+        function startTypingTimer() {
+            clearTimeout(typingTimer);
+            if (isSessionActive) return;
+            typingTimer = setTimeout(checkForPotentialId, typingDelay);
+        }
+        
+        function checkForPotentialId() {
+            const link = document.getElementById('public-link').value.trim();
+            if (isSessionActive) return;
+            if (document.getElementById('public-link').classList.contains('valid-link')) return;
+            if (isPotentialId(link)) {
+                showPopup(link);
+            }
+        }
+
+        function showPopup(username) {
+            potentialUsername = username;
+            document.getElementById('potential-username').textContent = username;
+            document.getElementById('popup-overlay').style.display = 'flex';
+        }
+        
+        function closePopup() {
+            document.getElementById('popup-overlay').style.display = 'none';
+        }
+
+        // تابع جدید برای تأیید آیدی (فقط سبز کردن، بدون ساخت لینک)
+        function applyConfirmedId() {
+            if (!potentialUsername) return;
+            const linkInput = document.getElementById('public-link');
+            const btnInput = document.getElementById('btn-text');
+            linkInput.value = '@' + potentialUsername;
+            isSessionActive = true;
+            setLinkFieldGreen();
+            if (btnInput.value.trim() !== '') {
+                setBtnFieldGreen();
+            } else {
+                setBtnFieldOrange();
+                setNeutralIcon('btn-text-icon');
+            }
+            updateGenerateButtonState();
+            closePopup();
+        }
+
+        function processAndGenerateLink(inputLink, btnText) {
+            if (!btnText.trim()) return false;
+
+            let link = inputLink.trim();
+            if (link.startsWith('@')) link = 'https://eitaa.com/' + link.slice(1);
+            else if (!link.startsWith('http')) link = 'https://eitaa.com/' + link;
+
+            if (!link.startsWith('https://eitaa.com/')) return false;
+            if (link.includes('joinchat')) return false;
+
+            const text = btnText.replace(/\s+/g, '.');
+            if (link.endsWith('/')) link = link.slice(0, -1);
+            const base = link.split('?')[0];
+            currentGlassLink = base + '/_app?btn=' + text;
+
+            document.getElementById('glass-link-container').innerHTML = currentGlassLink;
+            document.getElementById('glass-link-container').style.display = 'block';
+            document.getElementById('generate-btn').style.display = 'none';
+            document.getElementById('copy-main-btn').style.display = 'block';
+            
+            setLinkFieldGreen();
+            setBtnFieldGreen();
+            
+            document.body.classList.add('success-bg');
+            updateBackgroundColor('#4caf50');
+            return true;
+        }
+
+        function generateGlassLink() {
+            const link = document.getElementById('public-link').value.trim();
+            const btn = document.getElementById('btn-text').value.trim();
+            if (!link || !btn) return;
+
+            if (isSessionActive) {
+                processAndGenerateLink(link, btn);
+                return;
+            }
+
+            if (isPotentialId(link) && !isValidLink(link)) {
+                showPopup(link);
+                return;
+            }
+
+            if (isValidLink(link)) {
+                processAndGenerateLink(link, btn);
+            }
+        }
+
+        function copyMainLink() {
+            if (!currentGlassLink) return;
+            navigator.clipboard?.writeText(currentGlassLink).then(() => {
+                const el = document.getElementById('glass-link-container');
+                const orig = el.innerHTML;
+                el.innerHTML = '<span style="color:#4caf50;"><i class="fas fa-check"></i> کپی شد</span>';
+                setTimeout(() => el.innerHTML = orig, 2000);
+            });
+        }
+
+        window.addEventListener('load', function() {
+            const linkInput = document.getElementById('public-link');
+            const btnInput = document.getElementById('btn-text');
+            const linkIcon = document.getElementById('link-icon');
+
+            linkInput.addEventListener('input', function() {
+                clearTimeout(typingTimer); // هر بار تایپ، تایمر قبلی را پاک می‌کند
+                if (!isSessionActive || this.value.trim() === '') {
+                    document.getElementById('generate-btn').style.display = 'block';
+                    document.getElementById('copy-main-btn').style.display = 'none';
+                    document.getElementById('glass-link-container').innerHTML = '';
+                    document.getElementById('glass-link-container').style.display = 'none';
+                    document.body.classList.remove('success-bg');
+                    updateBackgroundColor('#F58C3C');
+                    
+                    if (isSessionActive && this.value.trim() === '') {
+                        isSessionActive = false;
+                        setBtnFieldOrange();
+                        setNeutralIcon('btn-text-icon');
+                    }
+                }
+
+                checkLinkType(); // این تابع ممکن است startTypingTimer را صدا بزند اگر potential ID باشد
+            });
+
+            btnInput.addEventListener('input', function() {
+                const currentText = this.value;
+                
+                if (isSessionActive) {
+                    if (currentText.trim() === '') {
+                        setBtnFieldOrange();
+                        setNeutralIcon('btn-text-icon');
+                    } else {
+                        setBtnFieldGreen();
+                    }
+                    
+                    if (currentGlassLink) {
+                        document.getElementById('generate-btn').style.display = 'none';
+                        document.getElementById('copy-main-btn').style.display = 'block';
+                    }
+                } else {
+                    document.getElementById('generate-btn').style.display = 'block';
+                    document.getElementById('copy-main-btn').style.display = 'none';
+                    document.getElementById('glass-link-container').innerHTML = '';
+                    document.getElementById('glass-link-container').style.display = 'none';
+                    document.body.classList.remove('success-bg');
+                    updateBackgroundColor('#F58C3C');
+                    setBtnFieldOrange();
+                    setNeutralIcon('btn-text-icon');
+                }
+                updateGenerateButtonState();
+            });
+
+            linkIcon.addEventListener('click', function() {
+                if (this.classList.contains('invalid-icon')) {
+                    linkInput.value = '';
+                    resetAllState();
+                    linkInput.focus();
+                }
+            });
+
+            document.getElementById('popup-yes').addEventListener('click', function() {
+                applyConfirmedId(); // فقط تأیید و سبز کردن، بدون ساخت لینک
+            });
+
+            document.getElementById('popup-no').addEventListener('click', function() {
+                closePopup();
+                linkInput.value = '';
+                resetAllState();
+                linkInput.focus();
+            });
+
+            document.getElementById('popup-overlay').addEventListener('click', function(e) {
+                if (e.target === this) closePopup();
+            });
+
+            setNeutralIcon('link-icon');
+            setNeutralIcon('btn-text-icon');
+            
+            updateGenerateButtonState();
+        });
+    </script>
+</body>
+</html>
